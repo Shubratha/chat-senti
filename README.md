@@ -1,4 +1,4 @@
-# chat-senti
+# Chat Application
 Chat room where chat messages are analysed using Sentiment Analysis and an appropriate emoji is displayed
 
 Technologies used: React, Sentiment, Next.js, Pusher
