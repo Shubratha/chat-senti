@@ -21,3 +21,7 @@ Instructions:
     PUSHER_APP_SECRET=YOUR_APP_SECRET
     PUSHER_APP_CLUSTER=YOUR_APP_CLUSTER
 ```
+6. Run the app
+```
+    npm run dev
+```
