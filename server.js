@@ -32,9 +32,10 @@ app.prepare()
     server.use(bodyParser.json());
     server.use(bodyParser.urlencoded({ extended: true }));
 
-    server.get('*', (req, res) => {
-      return handler(req, res);
-    });
+
+    // server.get('/', (req, res) => {
+    //   return handler(req, res);
+    // });
 
     const chatHistory = { messages: [] };
 
@@ -49,8 +50,13 @@ app.prepare()
       pusher.trigger('chat-room', 'new-message', { chat });
     });
 
-    server.post('/messages', (req, res, next) => {
+    server.get('/messages', (req, res, next) => {
+      console.log('...');
       res.json({ ...chatHistory, status: 'success' });
+    });
+
+    server.get('*', (req, res) => {
+      return handler(req, res);
     });
 
     server.listen(port, err => {
