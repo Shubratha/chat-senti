@@ -1,24 +1,28 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Layout from '../components/Layout';
 import Chat from '../components/Chat';
+import OnlineUsers from '../components/OnlineUsers';
 
 class IndexPage extends Component {
 
-  state = { user: null }
+  state = { user: null, roomUsers: [] }
 
   handleKeyUp = evt => {
-    if (evt.keyCode === 13) {
+    if (evt.key === "Enter") {
       const user =  evt.target.value;
-      this.setState({ user });
+      const roomUsers = [];
+      this.setState({ user: user });
+      roomUsers.push(user);
+      this.setState({ roomUsers });
     }
   }
 
   render() {
-    const { user } = this.state;
+    const { user, roomUsers } = this.state;
 
     const nameInputStyles = {
       background: 'transparent',
-      color: '#999',
+      color: 'black',
       border: 0,
       borderBottom: '1px solid #666',
       borderRadius: 0,
@@ -30,26 +34,32 @@ class IndexPage extends Component {
     return (
       <Layout pageTitle="Sentimental Chat">
 
-        <main className="container-fluid position-absolute h-100 bg-dark">
+        <main className="container-fluid position-absolute h-100 bg-info">
 
           <div className="row position-absolute w-100 h-100">
 
-            <section className="col-md-8 d-flex flex-row flex-wrap align-items-center align-content-center px-5">
+            <section className="col-md-4 d-flex flex-row flex-wrap align-items-center align-content-center px-5">
               <div className="px-5 mx-5">
 
                 <span className="d-block w-100 h1 text-light" style={{marginTop: -50}}>
                   {
                     user
                       ? (<span>
-                          <span style={{color: '#999'}}>Hello!</span> {user}
+                          <span style={{color: 'black'}}>Hello!</span> {user}
                         </span>)
                       : `What is your name?`
                   }
                 </span>
 
-                { !user && <input type="text" className="form-control mt-3 px-3 py-2" onKeyUp={this.handleKeyUp} autoComplete="off" style={nameInputStyles} /> }
+                { !user && <input type="text" className="form-control mt-3 px-3 py-2" onKeyPress={this.handleKeyUp} autoComplete="off" style={nameInputStyles} /> }
 
               </div>
+            </section>
+
+            <section className="col-md-4 d-flex fex-wrap bg-light">
+               
+                { <OnlineUsers roomUsers={roomUsers} /> }
+           
             </section>
 
             <section className="col-md-4 position-relative d-flex flex-wrap h-100 align-items-start align-content-between bg-white px-0">
