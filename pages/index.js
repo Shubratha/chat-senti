@@ -1,20 +1,57 @@
 import React, { Component, Fragment } from 'react';
+import axios from 'axios';
+import Pusher from 'pusher-js';
 import Layout from '../components/Layout';
 import Chat from '../components/Chat';
 import OnlineUsers from '../components/OnlineUsers';
 
 class IndexPage extends Component {
 
-  state = { user: null, roomUsers: [] }
+  state = { roomUsers: [] }
 
+  componentDidMount() {
+
+		this.pusher = new Pusher(process.env.PUSHER_APP_KEY, {
+		  cluster: process.env.PUSHER_APP_CLUSTER,
+		  encrypted: true
+		});
+	
+		this.channel = this.pusher.subscribe('chat-room');
+	
+		this.channel.bind('new-user', (userData) => {
+      const roomUsers = this.state.roomUsers;
+		  console.log("*********")
+		  console.log(userData)
+		  userData && this.state.roomUsers.push(userData.user);
+		});
+
+		this.pusher.connection.bind('connected', () => {
+			axios.get('/users')
+			  .then(response => {
+				const roomUsers = response.data.users;
+				this.setState({ roomUsers });
+			  })
+			  .catch(error => {
+				console.log(error.response)
+			  });
+		  });
+
+  }
+  
+  componentWillUnmount() {
+		this.pusher.disconnect();
+	}
+  
   handleKeyUp = evt => {
     if (evt.key === "Enter") {
-      const user =  evt.target.value;
-      const roomUsers = [];
-      this.setState({ user: user });
-      roomUsers.push(user);
-      this.setState({ roomUsers });
+      const user = evt.target.value;
+      this.setState({user:user}, 
+        () => this.postUser(this.state.user));
     }
+  }
+
+  postUser = (user) => {
+    axios.post('/user', {user})
   }
 
   render() {
@@ -30,6 +67,8 @@ class IndexPage extends Component {
       fontWeight: 500,
       boxShadow: 'none !important'
     };
+
+    console.log(this.state, this.props);
 
     return (
       <Layout pageTitle="Sentimental Chat">
@@ -58,7 +97,7 @@ class IndexPage extends Component {
 
             <section className="col-md-4 d-flex fex-wrap bg-light">
                
-                { <OnlineUsers roomUsers={roomUsers} /> }
+                { <OnlineUsers user={user} roomUsers={roomUsers} /> }
            
             </section>
 
