@@ -1,33 +1,32 @@
 import React, { Component, Fragment } from 'react';
+import axios from 'axios';
+import Pusher from 'pusher-js';
 
 class OnlineUsers extends Component {
 
-	state = { roomUsers: [] }
+	state = {}
+
 	render() {
-		// const { position = 'left', roomUsers } = this.props;
-		// const isRight = position.toLowerCase() === 'right';
 
-		// const align = isRight ? 'text-right' : 'text-left';
-		// const justify = isRight ? 'justify-content-end' : 'justify-content-start';
-
-		//    const UserList = roomUsers.map(user => {
-		// return (
-		// 	<li className="user" key={user.name}>
-		// 	  <span className={`presence ${user.presence.state}`} />
-		// 	  <span>{user.name}</span>
-		// 	</li>
-		// 	);
-		// });
+		let userList = {
+			// marginTop: '30em',
+			paddingTop: '13em',
+			marginLeft: '-14em'
+		};
+		
+		console.log(this.props.roomUsers)
 		return (
-			<div>
-				{this.props.roomUsers.map((item, index) => {
-					return (
-						<Fragment key={index}>
-							<span> {item} </span>
-						</Fragment>
-					);
-				})
-				}
+			<div className="border-bottom border-gray w-100 d-flex align-items-center" style={{ height: 90 }}>
+				<h2 className="text-dark mb-0 mx-4 px-2">Online Users</h2>
+				<div>
+				<ul style={userList}>
+					{this.props.roomUsers.map((item, index) => {
+						return (
+							<li key={index}> {item} </li>
+						);
+					})}
+				</ul>
+				</div>
 			</div>
 		)
 	}
