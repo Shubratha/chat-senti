@@ -32,12 +32,8 @@ app.prepare()
     server.use(bodyParser.json());
     server.use(bodyParser.urlencoded({ extended: true }));
 
-
-    // server.get('/', (req, res) => {
-    //   return handler(req, res);
-    // });
-
     const chatHistory = { messages: [] };
+    const onlineusers = [];
 
     server.post('/message', (req, res, next) => {
       console.log(JSON.stringify(req.body));
@@ -50,8 +46,22 @@ app.prepare()
       pusher.trigger('chat-room', 'new-message', { chat });
     });
 
-    server.get('/messages', (req, res, next) => {
+    server.post('/user', (req, res, next) => {
+      console.log(JSON.stringify(req.body));
+      const data = req.body;
+      console.log('user:', data);
+      onlineusers.push(data.user);
       console.log('...');
+      console.log(onlineusers)
+      pusher.trigger('chat-room', 'new-user', data);
+      res.json({status: "success"})
+    })
+
+    server.get('/users', (req, res, next) => {
+      res.json({ users: [...onlineusers], status: 'success' });
+    });
+
+    server.get('/messages', (req, res, next) => {
       res.json({ ...chatHistory, status: 'success' });
     });
 
